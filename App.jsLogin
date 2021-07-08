@@ -1,0 +1,40 @@
+import React, { Component } from 'react';
+import Inicio from './Login';
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
+  Keyboard,
+  AsyncStorage,
+} from 'react-native';
+import sos from './sos';
+
+export default class App extends Component {
+  state = {
+    login: true,
+    showL: true, 
+  }
+  showModaL = () => this.setState({ showL: !this.state.showL }) 
+  
+  onChange = data => {
+    this.setState({ login: false });
+  }
+
+  render() {
+
+    return (
+        <View> 
+          {this.state.login ?
+              <Text>entro..</Text>
+            :
+             <Text>no entro..</Text> 
+          }
+          
+        </View>
+    );
+  }
+}
+
+
