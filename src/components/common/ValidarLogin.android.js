@@ -24,13 +24,13 @@ const LoginScreen = () => {
   const [errortext, setErrortext] = useState('');
   const [hidePassword, setHidePass] = useState(true);
   const { email, changeEmail} = useContext(CityContext);
-  
-  const managePasswordVisibility = () => {  //function used to change password visibility 
+
+  const managePasswordVisibility = () => {  //function used to change password visibility
     setHidePass(!hidePassword);
-  } 
+  }
 
   const passwordInputRef = createRef();
-  
+
   const handleSubmitPress = () => {
     setErrortext('');
     if (!userEmail) {
@@ -43,8 +43,8 @@ const LoginScreen = () => {
     }
     setLoading(true);
     let dataToSend = {email: userEmail, password: userPassword};
-    
-    fetch('http://sos.meta.gov.co/reportes/api/login', {
+
+    fetch('http://sos.meta.gov.co/api/login', {
       method: 'POST',
       body: JSON.stringify(dataToSend),
       headers: {
@@ -66,7 +66,7 @@ const LoginScreen = () => {
         setErrortext("Error de Internet o Wifi inactiva");
         setLoading(false);
         console.error(error);
-    }); 
+    });
   }; //Fin handleSubmitPress
 
   return (
@@ -84,7 +84,7 @@ const LoginScreen = () => {
         }}>
         <View>
           <KeyboardAvoidingView enabled>
-            
+
             <View style={styles.SectionStyle}>
               <View>
                   <Text style={styles.textLogin}>Usuario</Text>
@@ -122,25 +122,25 @@ const LoginScreen = () => {
                   underlineColorAndroid="#f000"
                   returnKeyType="next"
                 />
-                <TouchableOpacity activeOpacity = { 0.8 } 
-                   style = { styles.visibilityBtn } 
-                   onPress = {managePasswordVisibility}> 
-                   <Image 
-                        source = { 
+                <TouchableOpacity activeOpacity = { 0.8 }
+                   style = { styles.visibilityBtn }
+                   onPress = {managePasswordVisibility}>
+                   <Image
+                        source = {
                           (hidePassword) ?
-                            require('../../../assets/hide.png') 
-                          : 
+                            require('../../../assets/hide.png')
+                          :
                             require('../../../assets/view.png')
-                        } 
-                        style = { styles.btnImage } 
-                  /> 
-                </TouchableOpacity> 
+                        }
+                        style = { styles.btnImage }
+                  />
+                </TouchableOpacity>
               </View>
             </View>
             {errortext != '' ? (
               <Text style={styles.errorTextStyle}> {errortext} </Text>
             ) : null}
-                   
+
           </KeyboardAvoidingView>
           <TouchableOpacity
               style={styles.buttonStyle}
@@ -222,20 +222,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   visibilityBtn: {
-    position: 'absolute', 
+    position: 'absolute',
     right: 3,
     height: 40,
-    width: 35, 
-    padding: 5 
+    width: 35,
+    padding: 5
  },
   btnImage: {
     resizeMode: 'contain',
-    height: '100%', 
+    height: '100%',
     width: '100%'
  },
- textBoxBtnHolder: { 
+ textBoxBtnHolder: {
    position: 'relative',
    alignSelf: 'stretch',
-   justifyContent: 'center' 
+   justifyContent: 'center'
  }
 });

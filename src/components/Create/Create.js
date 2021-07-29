@@ -23,6 +23,7 @@ import Map from './Map';
 import { hasGeolocationPermissions } from '../../permissions';
 import { normalize } from '../../utils/fonts';
 import Spinner from '../common/Spinner';
+
 import {
   clearAll,
   createBackup,
@@ -62,7 +63,7 @@ const Create = (props) => {
   } = useQuery('typesOfEmergencies', () =>
     fetch(`${BASE}${EMERGENCIES_TYPES}`).then((res) => res.json()),
   );
-  
+
   const [state, setState] = useState(STATES.CREATING);
 
   useEffect(() => {
@@ -93,17 +94,28 @@ const Create = (props) => {
     navigation.navigate('TakePicture');
   });
 
-   const createEmergency = ()  => {
+   const createEmergency =  ()  =>  {
     if (type && description && photos.length > 0) {
       const data = new FormData();
       photos.forEach((item, i) => {
-        const base64 = await  FileSystem.readAsStringAsync(photos.uri,{encoding:base64});
+        data.append('photos[]', {
+          uri: item.node.image.uri,
+          type: item.node.type,
+          name: `filename${i}.jpg`,
+        });
+      });
+
+/*      photos.forEach( async (item, i) => {
+        console.log(item.node.image.uri)
+       // const base64 = await RNFS.readFile(item.node.image.uri,'base64')//await  FileSystem.readAsStringAsync(photos.uri,{encoding:base64});
+       const base64='hola';
+       console.log(base64)
         data.append('photos', {
           uri: base64,
           type: item.node.type,
           name: `filename${i}.jpg`,
         });
-      });
+      });*/
       if (video) {
         data.append('video', {
           uri: video.node.image.uri,
@@ -112,7 +124,7 @@ const Create = (props) => {
         });
       }
       data.append('emergency_type', type);
-      data.append('geolocation', `POINT(${coords[0]} ${coords[1]})`);
+      data.append('geolocation', `${coords[1]},${coords[0]}`);
       data.append('description', description);
       data.append('cityId', cityId);
       data.append('email', email);
@@ -127,15 +139,16 @@ const Create = (props) => {
         photos,
         video,
       });
-      fetch(`${BASE}${EMERGENCIES}`, { //Envia los datos
+
+      fetch(`${BASE}${EMERGENCIES}`, {
         method: 'POST',
-        body: JSON.stringify(data),
         headers: {
-          'Accept' : 'application/json',
-          'Content-Type': 'application/json',
-        }
+          Accept: 'application/json',
+        },
+        body: data,
       })
         .then((res) => {
+          console.log(res);
           if (res.ok) {
             clearAll();
             setState(STATES.SUCCESSFUL);
@@ -155,8 +168,8 @@ const Create = (props) => {
   const accept = () => {
     setState(STATES.CREATING);
   };
- 
-  
+
+
   const successful = () => {
     setState(STATES.CREATING);
     resetAll();
@@ -215,11 +228,11 @@ const Create = (props) => {
   };
 
   return (
-    
+
     <View style={{ flex: 1 }}>
       <View style={styles.email}>
            <Text style={styles.textemail}>{email}</Text>
-      </View>  
+      </View>
       <ScrollView style={styles.container}>
         <Select
           placeholder="Tipo de emergencia"
